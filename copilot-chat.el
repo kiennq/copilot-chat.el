@@ -41,6 +41,7 @@
 (require 'copilot-chat-shell-maker)
 (require 'copilot-chat-common)
 (require 'copilot-chat-prompts)
+(require 'polymode)
 (require 'aio)
 (require 'cl-lib)
 
@@ -315,7 +316,9 @@ Side by side with the current code editing buffer."
   (interactive)
   (unless (copilot-chat--ready-p)
     (copilot-chat-reset))
-  (switch-to-buffer-other-window (copilot-chat--get-buffer)))
+  (unless (equal (pm-base-buffer) (copilot-chat--get-buffer))
+    (switch-to-buffer-other-window (copilot-chat--get-buffer)))
+  (copilot-chat-goto-input))
 
 ;;;###autoload
 (defun copilot-chat-custom-prompt-selection(&optional custom-prompt)
@@ -909,9 +912,8 @@ INC is the number to use as increment for index in block ring."
 
 (defun copilot-chat--yank()
   "Insert the code block at the current index in the block ring."
-  (let ((yank-fn (copilot-chat-frontend-yank-fn (copilot-chat--get-frontend))))
-    (when yank-fn
-      (funcall yank-fn))))
+  (when-let* ((yank-fn (copilot-chat-frontend-yank-fn (copilot-chat--get-frontend))))
+    (funcall yank-fn)))
 
 ;;;###autoload
 (defun copilot-chat-clear-auth-cache()
