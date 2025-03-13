@@ -27,21 +27,28 @@
 
 ;;; Code:
 
-(require 'markdown-mode)
-(require 'shell-maker)
-
 (require 'copilot-chat-copilot)
 (require 'copilot-chat-prompts)
 
+;; Declarations
+(declare-function markdown-view-mode "ext:markdown-mode")
+(declare-function make-shell-maker-config "ext:shell-maker")
+(declare-function shell-maker-submit "ext:shell-maker")
+(declare-function shell-maker-start "ext:shell-maker")
+(declare-function shell-maker--write-input-ring-history "ext:shell-maker")
+
 ;; Variables
 (defvar copilot-chat--shell-cb-fn nil)
-(defvar copilot-chat--shell-config
-  (make-shell-maker-config
-    :name "Copilot-Chat"
-    :execute-command 'copilot-chat--shell-cb))
+(defvar copilot-chat--shell-config nil)
 (defvar copilot-chat--shell-maker-answer-point 0
   "Start of the current answer.")
 
+(defun copilot-chat--shell-config ()
+  (or copilot-chat--shell-config
+    (setq copilot-chat--shell-config
+      (make-shell-maker-config
+        :name "Copilot-Chat"
+        :execute-command 'copilot-chat--shell-cb))))
 
 ;; Constants
 (defconst copilot-chat--shell-maker-temp-buffer "*copilot-chat-shell-maker-temp*")
@@ -55,6 +62,7 @@
     (display-buffer (current-buffer))))
 
 (defun copilot-chat--shell-maker-get-buffer ()
+  (require 'markdown-mode)
   (unless (buffer-live-p copilot-chat--buffer)
     (setq copilot-chat--buffer (copilot-chat--shell)))
   (let ((tempb (get-buffer-create copilot-chat--shell-maker-temp-buffer))
@@ -141,7 +149,7 @@ Argument ERROR-CALLBACK is the error callback function to call."
 (defun copilot-chat--shell ()
   "Start a Copilot Chat shell."
   (shell-maker-start
-    copilot-chat--shell-config
+    (copilot-chat--shell-config)
     t nil t
     (copilot-chat--get-buffer-name)))
 
@@ -154,7 +162,7 @@ Argument ERROR-CALLBACK is the error callback function to call."
   "Clean the copilot chat shell-maker frontend."
   (when (buffer-live-p copilot-chat--buffer)
     (with-current-buffer copilot-chat--buffer
-      (shell-maker--write-input-ring-history copilot-chat--shell-config)))
+      (shell-maker--write-input-ring-history (copilot-chat--shell-config))))
   (advice-remove 'copilot-chat-prompt-send #'copilot-chat--shell-maker-prompt-send))
 
 (defun copilot-chat-shell-maker-init()

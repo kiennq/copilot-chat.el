@@ -27,11 +27,20 @@
 
 ;;; Code:
 
-(require 'org)
 (require 'polymode)
 
 (require 'copilot-chat-common)
 (require 'copilot-chat-prompts)
+
+(declare-function copilot-chat-prompt-mode "copilot-chat")
+(declare-function org-element-map "ext:org")
+(declare-function org-element-parse-buffer "ext:org")
+(declare-function org-element-property "ext:org")
+(declare-function org-element-type "ext:org")
+(declare-function org-end-of-subtree "ext:org")
+(declare-function org-map-entries "ext:org")
+(declare-function org-mode "ext:org")
+(declare-function org-src-get-lang-mode "ext:org")
 
 ;;; Constants
 (defconst copilot-chat--org-input-tag

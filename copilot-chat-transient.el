@@ -27,9 +27,9 @@
 
 ;;; Code:
 (require 'transient)
+(require 'copilot-chat)
 
-
-;;;###autoload (autoload 'copilot-chat-transient "copilot-chat" nil t)
+;;;###autoload (autoload 'copilot-chat-transient "copilot-chat-transient" nil t)
 (transient-define-prefix copilot-chat-transient ()
   "Copilot chat command menu."
   [["Commands"
