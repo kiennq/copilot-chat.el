@@ -51,7 +51,7 @@
   :mode 'copilot-chat-markdown-prompt-mode)
 
 (define-innermode poly-copilot-markdown-innermode
-  :mode 'markdown-view-mode
+  :mode 'gfm-mode
   :head-matcher "\\`"  ; Match beginning of buffer
   :tail-matcher (concat copilot-chat--markdown-delimiter "\n")
   :head-mode 'inner
@@ -174,7 +174,7 @@ The input is created if not found."
     (if copilot-chat-follow
       buffer
       (with-current-buffer buffer
-        (pm-get-buffer-of-mode 'markdown-view-mode)))))
+        (pm-get-buffer-of-mode 'gfm-mode)))))
 
 (defun copilot-chat--markdown-insert-prompt (prompt)
   "Insert PROMPT in the chat buffer."
