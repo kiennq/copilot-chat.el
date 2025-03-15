@@ -27,6 +27,7 @@
 
 ;;; Code:
 
+(require 'markdown-mode)
 (require 'shell-maker)
 
 (require 'copilot-chat-copilot)
@@ -64,7 +65,7 @@ INSTANCE is used to get directory"
     (setf (copilot-chat-shell-maker-tmp-buf instance) tempb)
     (with-current-buffer tempb
       (let ((inhibit-read-only t))
-        (markdown-view-mode)))
+        (gfm-mode)))
     (copilot-chat-chat-buffer instance)))
 
 (defun copilot-chat--shell-maker-font-lock-faces (instance)
